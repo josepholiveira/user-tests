@@ -81,8 +81,7 @@ describe("Projects", () => {
       .send({
         title: "Back-end em Node.Js",
         description: "Um backend criado utilizando o express.",
-        owner: "Diego Fernandes",
-        likes: 0
+        owner: "Diego Fernandes"
       });
 
     const response = await request(app)
@@ -91,7 +90,8 @@ describe("Projects", () => {
         title: "Foodfy",
         description:
           "Um projeto incrível para uma empresa de receitas, chamada Foodfy",
-        owner: "Mayk Brito"
+        owner: "Mayk Brito",
+        likes: 15
       });
 
     expect(response.body).toMatchObject({
