@@ -2,95 +2,89 @@ const request = require("supertest");
 const app = require("../src/app");
 
 describe("Projects", () => {
-  it("should be able to create a new project", async () => {
+  it("should be able to create a new repository", async () => {
     const response = await request(app)
-      .post("/projects")
+      .post("/repositories")
       .send({
-        title: "Front-end em React",
-        description: "Um software para listagem de projetos em React",
-        owner: "Diego Fernandes"
+        url: "https://github.com/Rocketseat/umbriel",
+        title: "Umbriel",
+        techs: ["Node", "Express", "TypeScript"]
       });
 
     expect(response.body).toMatchObject({
-      title: "Front-end em React",
-      description: "Um software para listagem de projetos em React",
-      owner: "Diego Fernandes",
+      url: "https://github.com/Rocketseat/umbriel",
+      title: "Umbriel",
+      techs: ["Node", "Express", "TypeScript"],
       likes: 0
     });
   });
 
   it("should be able to list the projects", async () => {
-    const project = await request(app)
-      .post("/projects")
+    const repository = await request(app)
+      .post("/repositories")
       .send({
-        title: "Front-end em React",
-        description: "Um software para listagem de projetos em React",
-        owner: "Diego Fernandes"
+        url: "https://github.com/Rocketseat/umbriel",
+        title: "Umbriel",
+        techs: ["Node", "Express", "TypeScript"]
       });
 
-    const response = await request(app).get("/projects");
+    const response = await request(app).get("/repositories");
 
     expect(response.body).toEqual(
       expect.arrayContaining([
         {
-          id: project.body.id,
-          title: "Front-end em React",
-          description: "Um software para listagem de projetos em React",
-          owner: "Diego Fernandes",
+          id: repository.body.id,
+          url: "https://github.com/Rocketseat/umbriel",
+          title: "Umbriel",
+          techs: ["Node", "Express", "TypeScript"],
           likes: 0
         }
       ])
     );
   });
 
-  it("should be able to update project", async () => {
-    const project = await request(app)
-      .post("/projects")
+  it("should be able to update repository", async () => {
+    const repository = await request(app)
+      .post("/repositories")
       .send({
-        title: "Back-end em Node.Js",
-        description: "Um backend criado utilizando o express.",
-        owner: "Diego Fernandes"
+        url: "https://github.com/Rocketseat/umbriel",
+        title: "Umbriel",
+        techs: ["Node", "Express", "TypeScript"]
       });
 
     const response = await request(app)
-      .put(`/projects/${project.body.id}`)
+      .put(`/repositories/${repository.body.id}`)
       .send({
-        title: "Foodfy",
-        description:
-          "Um projeto incrível para uma empresa de receitas, chamada Foodfy",
-        owner: "Mayk Brito"
+        url: "https://github.com/Rocketseat/unform",
+        title: "Unform",
+        techs: ["React", "ReactNative", "TypeScript", "ContextApi"]
       });
 
     expect(response.body).toMatchObject({
-      title: "Foodfy",
-      description:
-        "Um projeto incrível para uma empresa de receitas, chamada Foodfy",
-      owner: "Mayk Brito"
+      url: "https://github.com/Rocketseat/unform",
+      title: "Unform",
+      techs: ["React", "ReactNative", "TypeScript", "ContextApi"]
     });
   });
 
-  it("should not be able to update a project that does not exist", async () => {
+  it("should not be able to update a repository that does not exist", async () => {
     await request(app)
-      .put(`/projects/123`)
+      .put(`/repositories/123`)
       .expect(400);
   });
 
-  it("should not be able to update project likes manually", async () => {
-    const project = await request(app)
-      .post("/projects")
+  it("should not be able to update repository likes manually", async () => {
+    const repository = await request(app)
+      .post("/repositories")
       .send({
-        title: "Back-end em Node.Js",
-        description: "Um backend criado utilizando o express.",
-        owner: "Diego Fernandes"
+        url: "https://github.com/Rocketseat/umbriel",
+        title: "Umbriel",
+        techs: ["React", "ReactNative", "TypeScript", "ContextApi"]
       });
 
     const response = await request(app)
-      .put(`/projects/${project.body.id}`)
+      .put(`/repositories/${repository.body.id}`)
       .send({
-        title: "Foodfy",
-        description:
-          "Um projeto incrível para uma empresa de receitas, chamada Foodfy",
-        owner: "Mayk Brito",
         likes: 15
       });
 
@@ -99,9 +93,9 @@ describe("Projects", () => {
     });
   });
 
-  it("should be able to delete the project", async () => {
+  it("should be able to delete the repository", async () => {
     const response = await request(app)
-      .post("/projects")
+      .post("/repositories")
       .send({
         title: "Front-end em React",
         description: "Um software para listagem de projetos em React",
@@ -109,13 +103,13 @@ describe("Projects", () => {
       });
 
     await request(app)
-      .delete(`/projects/${response.body.id}`)
+      .delete(`/repositories/${response.body.id}`)
       .expect(204);
   });
 
-  it("should not be able to delete a project that does not exist", async () => {
+  it("should not be able to delete a repository that does not exist", async () => {
     await request(app)
-      .delete(`/projects/123`)
+      .delete(`/repositories/123`)
       .expect(400);
   });
 });
