@@ -1,5 +1,6 @@
 const request = require("supertest");
 const app = require("../src/app");
+const { isUuid } = require("uuidv4");
 
 describe("Projects", () => {
   it("should be able to create a new repository", async () => {
@@ -10,6 +11,8 @@ describe("Projects", () => {
         title: "Umbriel",
         techs: ["Node", "Express", "TypeScript"]
       });
+
+    expect(isUuid(response.body.id)).toBe(true);
 
     expect(response.body).toMatchObject({
       url: "https://github.com/Rocketseat/umbriel",
@@ -60,6 +63,8 @@ describe("Projects", () => {
         techs: ["React", "ReactNative", "TypeScript", "ContextApi"]
       });
 
+    expect(isUuid(response.body.id)).toBe(true);
+
     expect(response.body).toMatchObject({
       url: "https://github.com/Rocketseat/unform",
       title: "Unform",
@@ -105,6 +110,12 @@ describe("Projects", () => {
     await request(app)
       .delete(`/repositories/${response.body.id}`)
       .expect(204);
+
+    const repositories = await request(app).get("/repositories");
+
+    const repository = repositories.body.find(r => r.id === response.body.id);
+
+    expect(repository).toBe(undefined);
   });
 
   it("should not be able to delete a repository that does not exist", async () => {

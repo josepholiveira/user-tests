@@ -11,12 +11,20 @@ describe("Likes", () => {
         owner: "Diego Fernandes"
       });
 
-    const response = await request(app).post(
+    let response = await request(app).post(
       `/repositories/${repository.body.id}/like`
     );
 
     expect(response.body).toMatchObject({
       likes: 1
+    });
+
+    response = await request(app).post(
+      `/repositories/${repository.body.id}/like`
+    );
+
+    expect(response.body).toMatchObject({
+      likes: 2
     });
   });
 
