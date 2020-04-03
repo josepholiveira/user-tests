@@ -1,81 +1,83 @@
 const express = require("express");
+const { uuid } = require("uuidv4");
 
 const app = express();
 
 app.use(express.json());
 
-const users = [];
+const projects = [];
 
-app.get("/users", (request, response) => {
-  const [{ name, github }] = users;
+app.get("/projects", (request, response) => {
+  const { title } = request.query;
 
-  response.json({ name, github });
+  const results = title
+    ? projects.filter(project => project.title.includes(title))
+    : projects;
+
+  response.json(results);
 });
 
-app.post("/users", (request, response) => {
-  const { name, github, password } = request.body;
+app.post("/projects", (request, response) => {
+  const { owner, title, description } = request.body;
 
-  const user = { name, github, password };
-
-  users.push(user);
-
-  response.json({
-    github: user.github,
-    name: user.name
-  });
-});
-
-app.put("/users/:github", (request, response) => {
-  const { github } = request.params;
-  const { name, password } = request.body;
-
-  const userIndex = users.findIndex(user => user.github === github);
-
-  if (userIndex < 0) {
-    return response.status(400).json({ error: "User does not exist" });
-  }
-
-  const user = {
-    github,
-    name,
-    password
+  const project = {
+    id: uuid(),
+    owner,
+    title,
+    description,
+    likes: 0
   };
 
-  users[userIndex] = user;
+  projects.push(project);
 
-  return response.json({ github: user.github, name: user.name });
+  response.json(project);
 });
 
-app.delete("/users/:github", (request, response) => {
-  const { github } = request.params;
+app.put("/projects/:id", (request, response) => {
+  const { id } = request.params;
+  const { owner, title, description } = request.body;
 
-  const userIndex = users.findIndex(user => user.github === github);
+  const projectIndex = projects.findIndex(project => project.id === id);
 
-  if (userIndex < 0) {
-    return response.status(400).json({ error: "User does not exist" });
+  if (projectIndex < 0) {
+    return response.status(400).json({ error: "Project not found" });
   }
 
-  users.splice(userIndex, 1);
+  const project = projects[projectIndex];
 
-  return response.status(204).send();
+  project.owner = owner;
+  project.title = title;
+  project.description = description;
+
+  return response.json(project);
 });
 
-app.post("/session", (request, response) => {
-  const { github, password } = request.body;
+app.delete("/projects/:id", (req, res) => {
+  const { id } = req.params;
 
-  const user = users.find(user => user.github === github);
+  const projectIndex = projects.findIndex(project => project.id === id);
 
-  if (!user) {
-    return response.status(400).json({ error: "User does not exist" });
+  if (projectIndex < 0) {
+    return res.status(400).json({ error: "Project not found" });
   }
 
-  if (user.password !== password) {
-    return response.status(401).json({ error: "Password does not match" });
+  projects.splice(projectIndex, 1);
+
+  res.status(204).send();
+});
+
+app.post("/projects/:id/like", (request, response) => {
+  const { id } = request.params;
+
+  const project = projects.find(p => p.id === id);
+
+  if (!project) {
+    return res.status(400).json({ error: "Project not found" });
   }
 
-  return response.json({
-    name: user.name
-  });
+  project.likes += 1;
+
+  return response.json(project);
 });
 
 module.exports = app;
