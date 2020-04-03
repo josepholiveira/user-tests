@@ -72,7 +72,7 @@ app.post("/projects/:id/like", (request, response) => {
   const project = projects.find(p => p.id === id);
 
   if (!project) {
-    return res.status(400).json({ error: "Project not found" });
+    return response.status(400).json({ error: "Project not found" });
   }
 
   project.likes += 1;

@@ -69,6 +69,12 @@ describe("Projects", () => {
     });
   });
 
+  it("should not be able to update a project that does not exist", async () => {
+    await request(app)
+      .put(`/projects/123`)
+      .expect(400);
+  });
+
   it("should not be able to update project likes manually", async () => {
     const project = await request(app)
       .post("/projects")
@@ -105,5 +111,11 @@ describe("Projects", () => {
     await request(app)
       .delete(`/projects/${response.body.id}`)
       .expect(204);
+  });
+
+  it("should not be able to delete a project that does not exist", async () => {
+    await request(app)
+      .delete(`/projects/123`)
+      .expect(400);
   });
 });

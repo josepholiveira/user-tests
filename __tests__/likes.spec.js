@@ -22,4 +22,10 @@ describe("Likes", () => {
       likes: 1
     });
   });
+
+  it("should not be able to like a project that does not exist", async () => {
+    await request(app)
+      .post(`/projects/123/like`)
+      .expect(400);
+  });
 });
