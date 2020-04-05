@@ -29,23 +29,23 @@ apiMock.onGet("repositories").reply(200, [
 ]);
 
 jest.mock(
-  'react-native/Libraries/Components/Touchable/TouchableOpacity.js',
+  "react-native/Libraries/Components/Touchable/TouchableOpacity.js",
   () => {
-    const { TouchableHighlight } = require('react-native')
+    const { TouchableHighlight } = require("react-native");
 
-    const MockTouchable = props => {
-      return <TouchableHighlight {...props} />
-    }
+    const MockTouchable = (props) => {
+      return <TouchableHighlight {...props} />;
+    };
 
-    MockTouchable.displayName = 'TouchableOpacity'
+    MockTouchable.displayName = "TouchableOpacity";
 
-    return MockTouchable
+    return MockTouchable;
   }
-)
+);
 
 describe("Likes", () => {
   it("should add a like to the like counter of the repository", async () => {
-    const { getByText, getByTestId, debug } = render(<App />);
+    const { getByTestId } = render(<App />);
 
     apiMock
       .onPost("repositories/d6e43105-a559-45b7-8fd7-53416b415741/like")
@@ -57,10 +57,13 @@ describe("Likes", () => {
         likes: 1,
       });
 
-      
     await actWait();
-      
+
     fireEvent.press(getByTestId("like-button"));
+
+    await actWait();
+
+    expect(getByTestId("repository-likes")).toHaveTextContent("1 curtida");
 
     apiMock
       .onPost("repositories/d6e43105-a559-45b7-8fd7-53416b415741/like")

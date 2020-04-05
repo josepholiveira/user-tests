@@ -1,0 +1,20 @@
+{
+  "name": "react-native-template-rocketseat-challenge-02",
+  "version": "1.0.0",
+  "jest": {
+    "preset": "@testing-library/react-native",
+    "collectCoverageFrom": [
+      "!src/service/api.js"
+    ],
+    "testMatch": [
+      "**/__tests__/**/*.test.js"
+    ],
+    "setupFilesAfterEnv": [
+      "@testing-library/jest-native/extend-expect"
+    ],
+    "coverageDirectory": "__tests__/coverage",
+    "moduleNameMapper": {
+      "^~/(.*)": "<rootDir>/src/$1"
+    }
+  }
+}

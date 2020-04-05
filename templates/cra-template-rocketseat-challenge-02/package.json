@@ -1,0 +1,10 @@
+{
+  "name": "cra-template-rocketseat-challenge-02",
+  "version": "1.0.0",
+  "description": "Template para resolução do desafio do Bootcamp GoStack",
+  "license": "MIT",
+  "files": [
+    "template",
+    "template.json"
+  ]
+}
